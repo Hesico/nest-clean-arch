@@ -115,4 +115,23 @@ describe('UserValidator unit Tests', () => {
             expect(sut.erros.password).toStrictEqual(['password must be shorter than or equal to 100 characters'])
         })
     })
+
+    describe('createdAt Field', () => {
+        it('Invalidation cases for createdAt field', () => {
+            let isValid = sut.validate(null as any)
+
+            expect(isValid).toBeFalsy()
+            expect(sut?.erros?.createdAt).toBeUndefined()
+
+            isValid = sut.validate({ ...UserDataBuilder({}), createdAt: '' } as any)
+
+            expect(isValid).toBeFalsy()
+            expect(sut.erros.createdAt).toStrictEqual(['createdAt must be a Date instance'])
+
+            isValid = sut.validate({ ...UserDataBuilder({}), createdAt: 10 } as any)
+
+            expect(isValid).toBeFalsy()
+            expect(sut.erros.createdAt).toStrictEqual(['createdAt must be a Date instance'])
+        })
+    })
 })
