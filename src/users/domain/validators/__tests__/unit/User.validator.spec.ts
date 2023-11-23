@@ -1,5 +1,5 @@
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder'
-import { UserValidator, UserValidatorFactory } from '../../user.validator'
+import { UserRules, UserValidator, UserValidatorFactory } from '../../user.validator'
 
 let sut: UserValidator
 
@@ -39,10 +39,13 @@ describe('UserValidator unit Tests', () => {
         })
 
         it('Valid cases for name field', () => {
-            let isValid = sut.validate({ ...UserDataBuilder({}), name: 'any_name' } as any)
+            const props = UserDataBuilder({})
+
+            let isValid = sut.validate(props)
 
             expect(isValid).toBeTruthy()
             expect(sut?.erros?.name).toBeUndefined()
+            expect(sut.validatedData).toStrictEqual(new UserRules(props))
         })
     })
 })
