@@ -60,5 +60,11 @@ describe('User Entity Integration Tests', () => {
             props = { ...UserDataBuilder({}), createdAt: 10 as any }
             expect(() => new UserEntity(props)).toThrow(EntityValidationError)
         })
+
+        it('Should a valid User', () => {
+            expect.assertions(0)
+            const props: UserProps = { ...UserDataBuilder({}) }
+            new UserEntity(props)
+        })
     })
 })
