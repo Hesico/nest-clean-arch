@@ -85,4 +85,22 @@ describe('User Entity Integration Tests', () => {
             entity.update('any_name')
         })
     })
+
+    describe('Update password method', () => {
+        it('Should throw an error when updating a User with invalid password', () => {
+            const entity = new UserEntity(UserDataBuilder({}))
+
+            expect(() => entity.updatePassword(null)).toThrow(EntityValidationError)
+            expect(() => entity.updatePassword('')).toThrow(EntityValidationError)
+            expect(() => entity.updatePassword(10 as any)).toThrow(EntityValidationError)
+            expect(() => entity.updatePassword('a'.repeat(101))).toThrow(EntityValidationError)
+        })
+
+        it('Should a valid User', () => {
+            expect.assertions(0)
+            const entity = new UserEntity(UserDataBuilder({}))
+
+            entity.updatePassword('any_pass')
+        })
+    })
 })
