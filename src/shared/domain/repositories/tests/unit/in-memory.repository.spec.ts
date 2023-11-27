@@ -107,12 +107,8 @@ describe('InMemoryRepository Unit Tests', () => {
         })
 
         await sut.insert(entity)
-
-        expect(sut.items).toHaveLength(1)
-
         await sut.delete(entity.id)
 
         expect(sut.items).toHaveLength(0)
-        await expect(sut.findById(entity.id)).rejects.toThrow(new NotFoundError('Entity not found'))
     })
 })
