@@ -7,7 +7,7 @@ export type SearchProps<Filter = string> = {
     page?: number
     perPage?: number
     sort?: string | null
-    sort_dir?: SortDirection | null
+    sortDir?: SortDirection | null
     filter?: Filter | null
 }
 
@@ -15,14 +15,14 @@ export class SearchParams {
     protected _page: number
     protected _perPage: number = 15
     protected _sort: string | null
-    protected _sort_dir: SortDirection | null
+    protected _sortDir: SortDirection | null
     protected _filter: string | null
 
-    constructor(props: SearchProps) {
-        this._page = props.page
-        this._perPage = props.perPage
-        this._sort = props.sort
-        this._sort_dir = props.sort_dir
+    constructor(props: SearchProps = {}) {
+        this.page = props.page
+        this.perPage = props.perPage
+        this.sort = props.sort
+        this.sortDir = props.sortDir
         this._filter = props.filter
     }
 
@@ -45,7 +45,7 @@ export class SearchParams {
     }
 
     private set perPage(value: number) {
-        let _perPage = +value
+        let _perPage = value === (true as any) ? this._perPage : value
 
         if (Number.isNaN(_perPage) || _perPage <= 0 || parseInt(_perPage as any) !== _perPage) {
             _perPage = this._perPage
@@ -64,19 +64,19 @@ export class SearchParams {
         this._sort = isEmpty ? null : `${value}`
     }
 
-    get sort_dir(): SortDirection | null {
-        return this._sort_dir
+    get sortDir(): SortDirection | null {
+        return this._sortDir
     }
 
-    private set sort_dir(value: string | null) {
+    private set sortDir(value: string | null) {
         if (!this._sort) {
-            this._sort_dir = null
+            this._sortDir = null
             return
         }
 
         const dir = `${value}`.toLowerCase()
 
-        this._sort_dir = dir !== 'asc' && dir !== 'desc' ? 'desc' : dir
+        this._sortDir = dir !== 'asc' && dir !== 'desc' ? 'desc' : dir
     }
 
     get filter(): string | null {
