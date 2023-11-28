@@ -135,7 +135,11 @@ export class SearchResult<E extends Entity, Filter = string> {
     }
 }
 
-export interface SearchableRepositoryInterface<E extends Entity, SearchInput, SearchOutput>
-    extends RepositoryInterface<E> {
-    search(input: SearchParams): Promise<SearchOutput>
+export interface SearchableRepositoryInterface<
+    E extends Entity,
+    Filter = string,
+    SearchInput = SearchParams,
+    SearchOutput = SearchResult<E, Filter>,
+> extends RepositoryInterface<E> {
+    search(input: SearchInput): Promise<SearchOutput>
 }
