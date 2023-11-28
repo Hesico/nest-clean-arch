@@ -23,7 +23,7 @@ export class SearchParams {
         this.perPage = props.perPage
         this.sort = props.sort
         this.sortDir = props.sortDir
-        this._filter = props.filter
+        this.filter = props.filter
     }
 
     get page(): number {
@@ -84,7 +84,7 @@ export class SearchParams {
     }
 
     private set filter(value: string | null) {
-        const isEmpty = !value || value === ''
+        const isEmpty = value === null || value === undefined || value === ''
 
         this._filter = isEmpty ? null : `${value}`
     }

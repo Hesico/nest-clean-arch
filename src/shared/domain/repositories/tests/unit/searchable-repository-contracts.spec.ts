@@ -105,11 +105,41 @@ describe('SearchableRepositoryInterface unit tests', () => {
                 { sortDir: 25, expected: 'desc' },
                 { sortDir: 1, expected: 'desc' },
                 { sortDir: 'asc', expected: 'asc' },
+                { sortDir: 'Asc', expected: 'asc' },
+                { sortDir: 'ASC', expected: 'asc' },
+                { sortDir: 'Desc', expected: 'desc' },
+                { sortDir: 'DESC', expected: 'desc' },
+                { sortDir: 'desc', expected: 'desc' },
             ]
 
             params.forEach(({ sortDir, expected }) => {
                 const sut = new SearchParams({ sort: 'field', sortDir: sortDir as any })
                 expect(sut.sortDir).toBe(expected)
+            })
+        })
+
+        it('filter prop', () => {
+            const sut = new SearchParams()
+            expect(sut.filter).toBe(null)
+
+            const params = [
+                { filter: null, expected: null },
+                { filter: undefined, expected: null },
+                { filter: 0, expected: '0' },
+                { filter: -1, expected: '-1' },
+                { filter: '', expected: null },
+                { filter: 'teste', expected: 'teste' },
+                { filter: true, expected: 'true' },
+                { filter: false, expected: 'false' },
+                { filter: 5.5, expected: '5.5' },
+                { filter: {}, expected: '[object Object]' },
+                { filter: 25, expected: '25' },
+                { filter: 1, expected: '1' },
+            ]
+
+            params.forEach(({ filter, expected }) => {
+                const sut = new SearchParams({ filter: filter as any })
+                expect(sut.filter).toBe(expected)
             })
         })
     })
