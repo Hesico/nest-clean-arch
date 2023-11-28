@@ -59,7 +59,7 @@ export class SearchParams {
     }
 
     private set sort(value: string | null) {
-        const isEmpty = !value || value === ''
+        const isEmpty = value === null || value === undefined || value === ''
 
         this._sort = isEmpty ? null : `${value}`
     }
