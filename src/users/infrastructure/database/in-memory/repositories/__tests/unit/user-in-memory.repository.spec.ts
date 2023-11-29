@@ -64,4 +64,32 @@ describe('UserInMemoryRepository unit Tests', () => {
         expect(spyFilter).toHaveBeenCalledTimes(1)
         expect(resultFiltered).toStrictEqual([items[0], items[1], items[2]])
     })
+
+    it('Should sort by createdAt when sort is not provided', async () => {
+        const createdAt = new Date()
+        const items = [
+            new UserEntity(UserDataBuilder({ name: 'Test', createdAt })),
+            new UserEntity(UserDataBuilder({ name: 'TESTE', createdAt: new Date(createdAt.getTime() + 1) })),
+            new UserEntity(UserDataBuilder({ name: 'teste', createdAt: new Date(createdAt.getTime() + 2) })),
+            new UserEntity(UserDataBuilder({ name: 'fake', createdAt: new Date(createdAt.getTime() + 3) })),
+        ]
+
+        const resultSorted = await sut['applySort'](items, null, null)
+        expect(resultSorted).toStrictEqual([items[3], items[2], items[1], items[0]])
+    })
+
+    it('Should sort by name when sort is provided', async () => {
+        const items = [
+            new UserEntity(UserDataBuilder({ name: 'Test' })),
+            new UserEntity(UserDataBuilder({ name: 'TESTE' })),
+            new UserEntity(UserDataBuilder({ name: 'teste' })),
+            new UserEntity(UserDataBuilder({ name: 'fake' })),
+        ]
+
+        let resultSorted = await sut['applySort'](items, 'name', 'asc')
+        expect(resultSorted).toStrictEqual([items[1], items[0], items[3], items[2]])
+
+        resultSorted = await sut['applySort'](items, 'name', null)
+        expect(resultSorted).toStrictEqual([items[2], items[3], items[0], items[1]])
+    })
 })
