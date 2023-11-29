@@ -84,14 +84,14 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         ]
 
         it('should no sort items', async () => {
-            let itemsFiltered = await sut['applySort'](items, null, null)
-            expect(itemsFiltered).toEqual(items)
+            let itemsSorted = await sut['applySort'](items, null, null)
+            expect(itemsSorted).toEqual(items)
 
-            itemsFiltered = await sut['applySort'](items, 'price', 'asc')
-            expect(itemsFiltered).toEqual(items)
+            itemsSorted = await sut['applySort'](items, 'price', 'asc')
+            expect(itemsSorted).toEqual(items)
         })
 
-        it('should filter using filter param', async () => {
+        it('should Sort using sort and sortDir param', async () => {
             let itemsSorted = await sut['applySort'](items, 'name', 'asc')
             expect(itemsSorted).toEqual([items[1], items[0], items[2]])
 
@@ -100,7 +100,29 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         })
     })
 
-    describe('applyPaginate method', () => {})
+    describe('applyPaginate method', () => {
+        const items = [
+            new StubEntity({ name: 'b', pricee: 1 }),
+            new StubEntity({ name: 'a', pricee: 2 }),
+            new StubEntity({ name: 'c', pricee: 3 }),
+            new StubEntity({ name: 'd', pricee: 3 }),
+            new StubEntity({ name: 'e', pricee: 3 }),
+        ]
+
+        it('should paginate items', async () => {
+            let itemsPaginated = await sut['applyPaginate'](items, 1, 2)
+            expect(itemsPaginated).toEqual([items[0], items[1]])
+
+            itemsPaginated = await sut['applyPaginate'](items, 2, 2)
+            expect(itemsPaginated).toEqual([items[2], items[3]])
+
+            itemsPaginated = await sut['applyPaginate'](items, 3, 2)
+            expect(itemsPaginated).toEqual([items[4]])
+
+            itemsPaginated = await sut['applyPaginate'](items, 4, 2)
+            expect(itemsPaginated).toEqual([])
+        })
+    })
 
     describe('search method', () => {})
 })
