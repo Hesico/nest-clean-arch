@@ -4,7 +4,7 @@ import { ConflictError } from '@/shared/domain/errors/conflict-error'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder'
 
-describe('UserInMemoryRepository', () => {
+describe('UserInMemoryRepository unit Tests', () => {
     let sut: UserInMemoryRepository
 
     beforeEach(() => {
