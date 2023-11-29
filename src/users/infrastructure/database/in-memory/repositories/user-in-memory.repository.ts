@@ -20,9 +20,9 @@ export class UserInMemoryRepository
     }
 
     async emailExists(email: string): Promise<void> {
-        const entity = this.items.find(item => item.email === email)
+        const entity = this.items.find(item => item.props.email === email)
 
-        if (entity) new ConflictError(`Emal address already used`)
+        if (entity) throw new ConflictError(`Email address already used`)
     }
 
     protected async applyFilter(items: UserEntity[], filter: UserRepository.Filter): Promise<UserEntity[]> {
