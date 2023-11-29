@@ -25,21 +25,20 @@ class StubInMemorySearchableRepository extends InMemorySearchableRepository<Stub
 
 describe('InMemorySearchableRepository Unit Tests', () => {
     let sut: StubInMemorySearchableRepository
-    let items: StubEntity[]
 
     beforeEach(() => {
         sut = new StubInMemorySearchableRepository()
+    })
 
-        items = [
+    describe('applyFilter method', () => {
+        const items = [
             new StubEntity({ name: 'test1', pricee: 1 }),
             new StubEntity({ name: 'TESTA2', pricee: 2 }),
             new StubEntity({ name: 'testA3', pricee: 3 }),
             new StubEntity({ name: 'testa4', pricee: 4 }),
             new StubEntity({ name: 'test5', pricee: 5 }),
         ]
-    })
 
-    describe('applyFilter method', () => {
         it('should return all items when filter is null', async () => {
             const spyFilterMethod = jest.spyOn(items, 'filter')
             const itemsFiltered = await sut['applyFilter'](items, null)
@@ -77,7 +76,29 @@ describe('InMemorySearchableRepository Unit Tests', () => {
         })
     })
 
-    describe('applySort method', () => {})
+    describe('applySort method', () => {
+        const items = [
+            new StubEntity({ name: 'b', pricee: 1 }),
+            new StubEntity({ name: 'a', pricee: 2 }),
+            new StubEntity({ name: 'c', pricee: 3 }),
+        ]
+
+        it('should no sort items', async () => {
+            let itemsFiltered = await sut['applySort'](items, null, null)
+            expect(itemsFiltered).toEqual(items)
+
+            itemsFiltered = await sut['applySort'](items, 'price', 'asc')
+            expect(itemsFiltered).toEqual(items)
+        })
+
+        it('should filter using filter param', async () => {
+            let itemsSorted = await sut['applySort'](items, 'name', 'asc')
+            expect(itemsSorted).toEqual([items[1], items[0], items[2]])
+
+            itemsSorted = await sut['applySort'](items, 'name', 'desc')
+            expect(itemsSorted).toEqual([items[2], items[0], items[1]])
+        })
+    })
 
     describe('applyPaginate method', () => {})
 
