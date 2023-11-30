@@ -1,4 +1,5 @@
 import { BadRequestError } from '@/shared/application/errors/bad-request-error'
+import { HashProviderInterface } from '@/shared/application/providers/hash-provider.interface'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserRepository } from '@/users/domain/repository/user.repository'
 
@@ -18,7 +19,10 @@ export namespace SignUpUseCase {
     }
 
     export class UseCase {
-        constructor(private userRepository: UserRepository.Repository) {}
+        constructor(
+            private userRepository: UserRepository.Repository,
+            private hashProvider: HashProviderInterface,
+        ) {}
 
         async execute(input: Input): Promise<Output> {
             const { name, email, password } = input
@@ -27,7 +31,8 @@ export namespace SignUpUseCase {
 
             await this.userRepository.emailExists(email)
 
-            const user = new UserEntity({ name, email, password })
+            const hashedPassword = await this.hashProvider.generateHash(password)
+            const user = new UserEntity(Object.assign(input, { password: hashedPassword }))
 
             await this.userRepository.insert(user)
             return user.toJSON()
