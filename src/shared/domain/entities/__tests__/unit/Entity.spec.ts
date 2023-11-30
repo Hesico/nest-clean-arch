@@ -45,7 +45,7 @@ describe('Entity unit tests', () => {
         const json = entity.toJSON()
 
         expect(json).toStrictEqual({
-            _id: id,
+            id: id,
             ...props,
         })
     })

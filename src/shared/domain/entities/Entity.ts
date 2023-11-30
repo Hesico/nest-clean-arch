@@ -15,7 +15,7 @@ export abstract class Entity<Props = any> {
 
     toJSON(): Required<{ id: string } & Props> {
         return {
-            _id: this._id,
+            id: this._id,
             ...this.props,
         } as Required<{ id: string } & Props>
     }
