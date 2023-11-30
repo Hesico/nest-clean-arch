@@ -1,16 +1,10 @@
 import { UserRepository } from '@/users/domain/repository/user.repository'
+import { UserOutput } from '../dto/user-output'
 
 export namespace GetUserUseCase {
+    export type Output = UserOutput
     export type Input = {
         id: string
-    }
-
-    export type Output = {
-        id: string
-        name: string
-        email: string
-        password: string
-        createdAt: Date
     }
 
     export class UseCase {

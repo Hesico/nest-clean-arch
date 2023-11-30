@@ -2,20 +2,14 @@ import { BadRequestError } from '@/shared/application/errors/bad-request-error'
 import { HashProviderInterface } from '@/shared/application/providers/hash-provider.interface'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserRepository } from '@/users/domain/repository/user.repository'
+import { UserOutput } from '../dto/user-output'
 
 export namespace SignUpUseCase {
+    export type Output = UserOutput
     export type Input = {
         name: string
         email: string
         password: string
-    }
-
-    export type Output = {
-        id: string
-        name: string
-        email: string
-        password: string
-        createdAt: Date
     }
 
     export class UseCase {
