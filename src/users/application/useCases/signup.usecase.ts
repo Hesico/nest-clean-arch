@@ -3,6 +3,7 @@ import { HashProviderInterface } from '@/shared/application/providers/hash-provi
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserRepository } from '@/users/domain/repository/user.repository'
 import { UserOutput } from '../dto/user-output'
+import { useCaseInterface } from '@/shared/application/usecases/use-case'
 
 export namespace SignUpUseCase {
     export type Output = UserOutput
@@ -12,7 +13,7 @@ export namespace SignUpUseCase {
         password: string
     }
 
-    export class UseCase {
+    export class UseCase implements useCaseInterface<Input, Output> {
         constructor(
             private userRepository: UserRepository.Repository,
             private hashProvider: HashProviderInterface,
