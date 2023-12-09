@@ -32,6 +32,19 @@ describe('UpdateUserPasswordUseCase unit Tests', () => {
         await expect(promise).rejects.toThrow(new InvalidPasswordError('oldPassword and password are required'))
     })
 
+    it('Should throw error when oldPassword is invalid', async () => {
+        const oldPassword = 'old_password'
+        const hashedPassword = await hashProvider.generateHash(oldPassword)
+
+        const entity = new UserEntity(UserDataBuilder({ password: hashedPassword }))
+        const items = [entity]
+
+        repository['items'] = items
+
+        const promise = sut.execute({ id: entity._id, password: 'any_password', oldPassword: 'invalid_password' })
+        await expect(promise).rejects.toThrow(new InvalidPasswordError('Invalid old password'))
+    })
+
     it('Should update an user password', async () => {
         const spyUpdate = jest.spyOn(repository, 'update')
 
