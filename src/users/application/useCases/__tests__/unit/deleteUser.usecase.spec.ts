@@ -24,6 +24,8 @@ describe('DeleteUseCase unit Tests', () => {
         const items = [new UserEntity(UserDataBuilder({}))]
 
         repository['items'] = items
+
+        expect(repository['items']).toHaveLength(1)
         await sut.execute({ id: items[0].id })
 
         expect(spyDelete).toHaveBeenCalledTimes(1)
