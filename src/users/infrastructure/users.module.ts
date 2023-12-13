@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { SignUpUseCase } from '../application/useCases/signup.usecase'
 import { UserInMemoryRepository } from './database/in-memory/repositories/user-in-memory.repository'
@@ -16,7 +15,6 @@ import { DeleteUserUseCase } from '../application/useCases/deleteUser.usecase'
 @Module({
     controllers: [UsersController],
     providers: [
-        UsersService,
         {
             provide: 'HashProvider',
             useClass: BcryptjsHashProvider,
