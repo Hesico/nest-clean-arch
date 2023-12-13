@@ -3,15 +3,15 @@ import { UserRepository } from '@/users/domain/repository/user.repository'
 import { NotFoundError } from '@/shared/domain/errors/not-found-error'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder'
-import { DeleteUseCase } from '../../deleteUser.usecase'
+import { DeleteUserUseCase } from '../../deleteUser.usecase'
 
-describe('DeleteUseCase unit Tests', () => {
-    let sut: DeleteUseCase.UseCase
+describe('DeleteUserUseCase unit Tests', () => {
+    let sut: DeleteUserUseCase.UseCase
     let repository: UserRepository.Repository
 
     beforeEach(() => {
         repository = new UserInMemoryRepository()
-        sut = new DeleteUseCase.UseCase(repository)
+        sut = new DeleteUserUseCase.UseCase(repository)
     })
 
     it('Should throw error when entity not found', async () => {

@@ -1,7 +1,7 @@
 import { UserRepository } from '@/users/domain/repository/user.repository'
 import { useCaseInterface } from '@/shared/application/usecases/use-case'
 
-export namespace DeleteUseCase {
+export namespace DeleteUserUseCase {
     export type Output = void
     export type Input = {
         id: string
