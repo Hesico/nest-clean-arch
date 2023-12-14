@@ -1,0 +1,47 @@
+import { Test, TestingModule } from '@nestjs/testing'
+import { UsersController } from '../../users.controller'
+import { UserOutput } from '@/users/application/dto/user-output'
+import { SignUpUseCase } from '@/users/application/useCases/signup.usecase'
+import { SignupDto } from '../../dto/signup.dto'
+
+describe('UsersController unit tests', () => {
+    let sut: UsersController
+    let id: string
+    let props: UserOutput
+
+    beforeEach(async () => {
+        sut = new UsersController()
+        id = '775878ef-2675-4672-b9d3-818565e87ec5'
+        props = {
+            id,
+            name: 'any_name',
+            email: 'any_email',
+            password: 'any_password',
+            createdAt: new Date(),
+        }
+    })
+
+    it('should be defined', () => {
+        expect(sut).toBeDefined()
+    })
+
+    it('should create a user', async () => {
+        const output: SignUpUseCase.Output = props
+        const mockSignUpUseCase = {
+            execute: jest.fn().mockResolvedValue(Promise.resolve(output)),
+        }
+
+        sut['singUpUseCase'] = mockSignUpUseCase as any
+
+        const input: SignupDto = {
+            name: 'any_name',
+            email: 'any_email',
+            password: 'any_password',
+        }
+
+        const result = await sut.create(input)
+
+        expect(result).toMatchObject(output)
+        expect(mockSignUpUseCase.execute).toHaveBeenCalledWith(input)
+    })
+})
