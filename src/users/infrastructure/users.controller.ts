@@ -10,6 +10,7 @@ import { GetUserUseCase } from '../application/useCases/getUser.usecase'
 import { DeleteUserUseCase } from '../application/useCases/deleteUser.usecase'
 import { ListUsersDto } from './dto/list-users.dto'
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto'
+import { SigninDto } from './dto/signin.dto'
 
 @Controller('users')
 export class UsersController {
@@ -41,8 +42,8 @@ export class UsersController {
 
     @HttpCode(200)
     @Post('login')
-    async login(@Body() signupDto: SignupDto) {
-        return this.singInUseCase.execute(signupDto)
+    async login(@Body() signinDto: SigninDto) {
+        return this.singInUseCase.execute(signinDto)
     }
 
     @Get()

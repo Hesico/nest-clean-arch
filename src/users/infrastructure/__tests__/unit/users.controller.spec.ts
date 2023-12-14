@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { UsersController } from '../../users.controller'
 import { UserOutput } from '@/users/application/dto/user-output'
 import { SignUpUseCase } from '@/users/application/useCases/signup.usecase'
 import { SignupDto } from '../../dto/signup.dto'
+import { SignInUseCase } from '@/users/application/useCases/signin.usecase'
+import { SigninDto } from '../../dto/signin.dto'
 
 describe('UsersController unit tests', () => {
     let sut: UsersController
@@ -43,5 +44,24 @@ describe('UsersController unit tests', () => {
 
         expect(result).toMatchObject(output)
         expect(mockSignUpUseCase.execute).toHaveBeenCalledWith(input)
+    })
+
+    it('should authenticate a user', async () => {
+        const output: SignInUseCase.Output = props
+        const mockSignInUseCase = {
+            execute: jest.fn().mockResolvedValue(Promise.resolve(output)),
+        }
+
+        sut['singInUseCase'] = mockSignInUseCase as any
+
+        const input: SigninDto = {
+            email: 'any_email',
+            password: 'any_password',
+        }
+
+        const result = await sut.login(input)
+
+        expect(result).toMatchObject(output)
+        expect(mockSignInUseCase.execute).toHaveBeenCalledWith(input)
     })
 })
