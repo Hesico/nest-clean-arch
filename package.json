@@ -9,15 +9,17 @@
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",
-        "start:dev": "NODE_ENV=development nest start --watch",
+        "start:dev": "npx dotenv-cli -e .env.develoment -- nest start --watch",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-        "test": "NODE_ENV=test jest",
+        "test": "npx dotenv-cli -e .env.test -- jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+        "test:e2e": "jest --config ./test/jest-e2e.json",
+        "prisma:dev:migrate": "npx dotenv-cli -e .env.development -- npx prisma migrate dev --schema ./src/shared/infrastructure/database/prisma/schema.prisma",
+        "prisma:generate": "npx dotenv-cli -e .env.development -- npx prisma generate --schema ./src/shared/infrastructure/database/prisma/schema.prisma"
     },
     "dependencies": {
         "@nestjs/common": "^10.0.0",
