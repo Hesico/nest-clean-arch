@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+    db:
+        build: . #Usa o Dockerfile da pasta local (./)
+        container_name: api-db
+        restart: always #Sempre que reiniciar o container, o banco sera reiniciado
+        tty: true #Permitir fazer comandos via shell
+        ports:
+            - '5432:5432'
+        volumes:
+            - .docker/dbdata:/var/lib/postgresql/data #Salvar dados na maquina (Para não perder ao finalizar o container)
+        environment:
+            - POSTGRES_PASSWORD=docker
+            - POSTGRES_DB=projectdb
