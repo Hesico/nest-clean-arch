@@ -101,6 +101,23 @@ describe('UserPrismaRepository Integration tests', () => {
         expect(output).toBeNull()
     })
 
+    it('Throw error when entity not found on findByEmail', async () => {
+        expect(() => sut.findByEmail('any_email')).rejects.toThrow(
+            new NotFoundError(`User not found using email any_email`),
+        )
+    })
+
+    it('Should find user by email', async () => {
+        const entity = new UserEntity(UserDataBuilder({}))
+        const newUser = await prismaService.user.create({
+            data: entity.toJSON(),
+        })
+
+        const output = await sut.findByEmail(newUser.email)
+
+        expect(output.toJSON()).toStrictEqual(entity.toJSON())
+    })
+
     describe('Search methods', () => {
         it('Should apply only pagination when the other params are null', async () => {
             const createdAt = new Date()
