@@ -8,6 +8,7 @@ import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builde
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserRepository } from '@/users/domain/repository/user.repository'
 import { SearchResult } from '@/shared/domain/repositories/searchable-repository-contracts'
+import { ConflictError } from '@/shared/domain/errors/conflict-error'
 
 describe('UserPrismaRepository Integration tests', () => {
     const prismaService = new PrismaClient()
@@ -116,6 +117,19 @@ describe('UserPrismaRepository Integration tests', () => {
         const output = await sut.findByEmail(newUser.email)
 
         expect(output.toJSON()).toStrictEqual(entity.toJSON())
+    })
+
+    it('Throw error when email Exists', async () => {
+        const entity = new UserEntity(UserDataBuilder({}))
+        await prismaService.user.create({
+            data: entity.toJSON(),
+        })
+
+        expect(() => sut.emailExists(entity.email)).rejects.toThrow(new ConflictError('Email address already used'))
+    })
+
+    it('Should not throw when email is not found - emailExists method', async () => {
+        expect(() => sut.emailExists('any_email')).not.toThrow()
     })
 
     describe('Search methods', () => {
