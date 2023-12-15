@@ -45,4 +45,18 @@ describe('UserPrismaRepository Integration tests', () => {
         const output = await prismaService.user.findUnique({ where: { id: entity.id } })
         expect(output).toStrictEqual(entity.toJSON())
     })
+
+    it('Should return all users', async () => {
+        const entity = new UserEntity(UserDataBuilder({}))
+        const newUser = await prismaService.user.create({
+            data: entity.toJSON(),
+        })
+
+        const entities = await sut.findAll()
+
+        expect(entities).toHaveLength(1)
+        entities.map(item => {
+            expect(item.toJSON()).toStrictEqual(entity.toJSON())
+        })
+    })
 })
