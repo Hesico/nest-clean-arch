@@ -33,25 +33,18 @@ describe('GetUserUseCase Integration tests', () => {
         await module.close()
     })
 
-    it('Should throws error when entity not found on delete', async () => {
+    it('Should throws error when entity not found', async () => {
         const promise = sut.execute({ id: 'any_id' })
         await expect(promise).rejects.toThrow(new NotFoundError('User not found using ID any_id'))
     })
 
-    it('Should delete a User', async () => {
+    it('Should return a User', async () => {
         const entity = new UserEntity(UserDataBuilder({}))
         await prismaService.user.create({
             data: entity.toJSON(),
         })
 
-        const newEntity = await prismaService.user.findUnique({
-            where: { id: entity.id },
-        })
-
-        expect(newEntity).toMatchObject(entity.toJSON())
-
         const user = await sut.execute({ id: entity.id })
-
         expect(user).toMatchObject(entity.toJSON())
     })
 })
