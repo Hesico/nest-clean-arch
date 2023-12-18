@@ -89,8 +89,13 @@ describe('ListUsersUseCase Integration tests', () => {
             filter: 'TEST',
         })
 
-        expect(SearchOutputPage1.items[0]).toStrictEqual(entities[0].toJSON())
-        expect(SearchOutputPage1.items[1]).toStrictEqual(entities[4].toJSON())
+        expect(SearchOutputPage1).toMatchObject({
+            items: [entities[0].toJSON(), entities[4].toJSON()],
+            total: 3,
+            currentPage: 1,
+            perPage: 2,
+            lastPage: 2,
+        })
 
         const SearchOutputPage2 = await sut.execute({
             page: 2,
@@ -100,6 +105,12 @@ describe('ListUsersUseCase Integration tests', () => {
             filter: 'TEST',
         })
 
-        expect(SearchOutputPage2.items[0]).toStrictEqual(entities[2].toJSON())
+        expect(SearchOutputPage2).toMatchObject({
+            items: [entities[2].toJSON()],
+            total: 3,
+            currentPage: 2,
+            perPage: 2,
+            lastPage: 2,
+        })
     })
 })
