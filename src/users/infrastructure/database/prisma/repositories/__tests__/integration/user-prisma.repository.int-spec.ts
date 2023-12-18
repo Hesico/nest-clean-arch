@@ -16,7 +16,7 @@ describe('UserPrismaRepository Integration tests', () => {
     let module: TestingModule
 
     beforeAll(async () => {
-        setupPrismaTests()
+        // setupPrismaTests()
         module = await Test.createTestingModule({
             imports: [DatabaseModule.forTest(prismaService)],
         }).compile()
