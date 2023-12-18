@@ -52,7 +52,7 @@ describe('ListUsersUseCase Integration tests', () => {
             data: entities.map(entity => entity.toJSON()),
         })
 
-        const SearchOutput = await sut.execute(new UserRepository.SearchParams())
+        const SearchOutput = await sut.execute({})
         const items = SearchOutput.items
 
         expect(SearchOutput.items).toHaveLength(15)
@@ -81,28 +81,24 @@ describe('ListUsersUseCase Integration tests', () => {
             data: entities.map(entity => entity.toJSON()),
         })
 
-        const SearchOutputPage1 = await sut.execute(
-            new UserRepository.SearchParams({
-                page: 1,
-                perPage: 2,
-                sort: 'name',
-                sortDir: 'asc',
-                filter: 'TEST',
-            }),
-        )
+        const SearchOutputPage1 = await sut.execute({
+            page: 1,
+            perPage: 2,
+            sort: 'name',
+            sortDir: 'asc',
+            filter: 'TEST',
+        })
 
         expect(SearchOutputPage1.items[0]).toStrictEqual(entities[0].toJSON())
         expect(SearchOutputPage1.items[1]).toStrictEqual(entities[4].toJSON())
 
-        const SearchOutputPage2 = await sut.execute(
-            new UserRepository.SearchParams({
-                page: 2,
-                perPage: 2,
-                sort: 'name',
-                sortDir: 'asc',
-                filter: 'TEST',
-            }),
-        )
+        const SearchOutputPage2 = await sut.execute({
+            page: 2,
+            perPage: 2,
+            sort: 'name',
+            sortDir: 'asc',
+            filter: 'TEST',
+        })
 
         expect(SearchOutputPage2.items[0]).toStrictEqual(entities[2].toJSON())
     })
