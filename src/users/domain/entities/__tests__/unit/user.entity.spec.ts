@@ -19,7 +19,7 @@ describe('User Entity Unit Tests', () => {
     })
 
     it('Getter of name field', () => {
-        expect(sut.props.name).toBeDefined()
+        expect(sut.name).toBeDefined()
         expect(sut.name).toEqual(props.name)
         expect(typeof sut.name).toBe('string')
     })
@@ -31,13 +31,13 @@ describe('User Entity Unit Tests', () => {
     })
 
     it('Getter of email field', () => {
-        expect(sut.props.email).toBeDefined()
+        expect(sut.email).toBeDefined()
         expect(sut.email).toEqual(props.email)
         expect(typeof sut.email).toBe('string')
     })
 
     it('Getter of password field', () => {
-        expect(sut.props.password).toBeDefined()
+        expect(sut.password).toBeDefined()
         expect(sut.password).toEqual(props.password)
         expect(typeof sut.password).toBe('string')
     })
@@ -49,7 +49,7 @@ describe('User Entity Unit Tests', () => {
     })
 
     it('Getter of createdAt field', () => {
-        expect(sut.props.createdAt).toBeDefined()
+        expect(sut.createdAt).toBeDefined()
         expect(sut.createdAt).toBeInstanceOf(Date)
     })
 
