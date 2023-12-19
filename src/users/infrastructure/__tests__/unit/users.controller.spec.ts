@@ -11,6 +11,7 @@ import { UpdateUserPasswordDto } from '../../dto/update-user-password.dto'
 import { GetUserUseCase } from '@/users/application/useCases/getUser.usecase'
 import { ListUsersUseCase } from '@/users/application/useCases/listUsers.usecase'
 import { ListUsersDto } from '../../dto/list-users.dto'
+import { UserPresenter } from '../../presenters/user.presenter'
 
 describe('UsersController unit tests', () => {
     let sut: UsersController
@@ -47,9 +48,10 @@ describe('UsersController unit tests', () => {
             password: 'any_password',
         }
 
-        const result = await sut.create(input)
+        const presenter = await sut.create(input)
 
-        expect(result).toMatchObject(output)
+        expect(presenter).toBeInstanceOf(UserPresenter)
+        expect(presenter).toStrictEqual(new UserPresenter(output))
         expect(mockSignUpUseCase.execute).toHaveBeenCalledWith(input)
     })
 
@@ -66,9 +68,10 @@ describe('UsersController unit tests', () => {
             password: 'any_password',
         }
 
-        const result = await sut.login(input)
+        const presenter = await sut.login(input)
 
-        expect(result).toMatchObject(output)
+        expect(presenter).toBeInstanceOf(UserPresenter)
+        expect(presenter).toStrictEqual(new UserPresenter(output))
         expect(mockSignInUseCase.execute).toHaveBeenCalledWith(input)
     })
 
@@ -84,9 +87,10 @@ describe('UsersController unit tests', () => {
             name: 'any_name',
         }
 
-        const result = await sut.update(id, input)
+        const presenter = await sut.update(id, input)
 
-        expect(result).toMatchObject(output)
+        expect(presenter).toBeInstanceOf(UserPresenter)
+        expect(presenter).toStrictEqual(new UserPresenter(output))
         expect(mockUpdateUserUseCase.execute).toHaveBeenCalledWith({ id, ...input })
     })
 
@@ -103,9 +107,10 @@ describe('UsersController unit tests', () => {
             oldPassword: 'any_old_password',
         }
 
-        const result = await sut.updatePassword(id, input)
+        const presenter = await sut.updatePassword(id, input)
 
-        expect(result).toMatchObject(output)
+        expect(presenter).toBeInstanceOf(UserPresenter)
+        expect(presenter).toStrictEqual(new UserPresenter(output))
         expect(mockUpdateUserPasswordUseCase.execute).toHaveBeenCalledWith({ id, ...input })
     })
 
@@ -133,13 +138,14 @@ describe('UsersController unit tests', () => {
 
         sut['getUserUseCase'] = mockGetUserUseCase as any
 
-        const result = await sut.findOne(id)
+        const presenter = await sut.findOne(id)
 
-        expect(result).toEqual(output)
+        expect(presenter).toBeInstanceOf(UserPresenter)
+        expect(presenter).toStrictEqual(new UserPresenter(output))
         expect(mockGetUserUseCase.execute).toHaveBeenCalledWith({ id })
     })
 
-    it('should update a user password', async () => {
+    it('should Search users', async () => {
         const output: ListUsersUseCase.Output = {
             items: [props],
             total: 1,
