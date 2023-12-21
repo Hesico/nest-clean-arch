@@ -6,9 +6,11 @@ export class WrapperDataInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next.handle().pipe(
             map(body => {
-                return {
-                    data: body,
-                }
+                return !body || 'meta' in body
+                    ? body
+                    : {
+                          data: body,
+                      }
             }),
         )
     }
