@@ -115,11 +115,11 @@ describe('UsersController e2e tests', () => {
             const entity = new UserEntity(UserDataBuilder({ ...signupDto }))
             await repository.insert(entity)
 
-            const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(409)
-
-            console.log(res.body)
-            // expect(res.body.error).toEqual('Unprocessable Entity')
-            // expect(res.body.message).toStrictEqual(['property xpto should not exist'])
+            const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(409).expect({
+                statusCode: 409,
+                error: 'Conflict',
+                message: 'Email address already used',
+            })
         })
     })
 })
