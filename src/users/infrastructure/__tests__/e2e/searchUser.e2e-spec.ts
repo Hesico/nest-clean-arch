@@ -75,6 +75,48 @@ describe('UsersController e2e tests', () => {
             })
         })
 
+        it('Should return the users with pagination, filter and sort', async () => {
+            const createdAt = new Date()
+            const entities: UserEntity[] = []
+            const arrange = ['test', 'a', 'TEST', 'b', 'TeSt']
+
+            arrange.forEach((item, index) => {
+                entities.push(
+                    new UserEntity({
+                        ...UserDataBuilder({}),
+                        name: item,
+                        email: `teste${index}@email.com`,
+                        createdAt: new Date(createdAt.getTime() + index),
+                    }),
+                )
+            })
+
+            await prismaService.user.createMany({
+                data: entities.map(entity => entity.toJSON()),
+            })
+
+            const searchParams = {
+                page: 1,
+                perPage: 2,
+                sort: 'name',
+                sortDir: 'asc',
+                filter: 'TEST',
+            }
+            const queryParams = new URLSearchParams(searchParams as any).toString()
+            const res = await request(app.getHttpServer()).get(`/users?${queryParams}`).expect(200)
+
+            expect(Object.keys(res.body)).toStrictEqual(['data', 'meta'])
+            expect(res.body).toStrictEqual({
+                data: [entities[0], entities[4]].map(item => instanceToPlain(UsersController.userToResponse(item))),
+                meta: {
+                    total: 3,
+                    currentPage: 1,
+                    perPage: 2,
+                    lastPage: 2,
+                },
+            })
+        })
+
         it('Should return a error with 422 code when the query is invalid', async () => {
             const res = await request(app.getHttpServer()).get(`/users?fakeId=10`).expect(422)
             expect(res.body.error).toBe('Unprocessable Entity')

@@ -11,6 +11,9 @@ export function applyGlobalConfig(app: INestApplication) {
             whitelist: true,
             forbidNonWhitelisted: true,
             transform: true,
+            transformOptions: {
+                enableImplicitConversion: true,
+            },
         }),
     )
 
