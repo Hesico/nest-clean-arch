@@ -67,13 +67,13 @@ describe('UsersController e2e tests', () => {
             expect(res.body.message).toStrictEqual(['name should not be empty', 'name must be a string'])
         })
 
-        // it('Should return a error when name field is invalid', async () => {
-        //     delete signupDto.name
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
-
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['name should not be empty', 'name must be a string'])
-        // })
+        it('Should return a error with 404 code when throw NotFoundError with invalid id', async () => {
+            const res = await request(app.getHttpServer()).put(`/users/fakeId`).send(updateUserDto).expect(404).expect({
+                statusCode: 404,
+                error: 'Not Found',
+                message: 'User not found using ID fakeId',
+            })
+        })
 
         // it('Should return a error when email field is invalid', async () => {
         //     delete signupDto.email
