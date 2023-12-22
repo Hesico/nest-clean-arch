@@ -74,46 +74,5 @@ describe('UsersController e2e tests', () => {
                 message: 'User not found using ID fakeId',
             })
         })
-
-        // it('Should return a error when email field is invalid', async () => {
-        //     delete signupDto.email
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
-
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual([
-        //         'email must be an email',
-        //         'email should not be empty',
-        //         'email must be a string',
-        //     ])
-        // })
-
-        // it('Should return a error when password field is invalid', async () => {
-        //     delete signupDto.password
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
-
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['password should not be empty', 'password must be a string'])
-        // })
-
-        // it('Should return a error when a invalid field is provided', async () => {
-        //     const res = await request(app.getHttpServer())
-        //         .post('/users')
-        //         .send(Object.assign(signupDto, { xpto: 10 }))
-        //         .expect(422)
-
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['property xpto should not exist'])
-        // })
-
-        // it('Should return a error with 409 when the email is duplicated', async () => {
-        //     const entity = new UserEntity(UserDataBuilder({ ...signupDto }))
-        //     await repository.insert(entity)
-
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(409).expect({
-        //         statusCode: 409,
-        //         error: 'Conflict',
-        //         message: 'Email address already used',
-        //     })
-        // })
     })
 })
