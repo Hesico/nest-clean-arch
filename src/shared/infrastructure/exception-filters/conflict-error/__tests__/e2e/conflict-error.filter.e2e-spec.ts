@@ -24,10 +24,6 @@ describe('ConflictErrorFilter tests', () => {
         await app.init()
     })
 
-    afterAll(async () => {
-        await module.close()
-    })
-
     it('should be defined', () => {
         expect(new ConflictErrorFilter()).toBeDefined()
     })

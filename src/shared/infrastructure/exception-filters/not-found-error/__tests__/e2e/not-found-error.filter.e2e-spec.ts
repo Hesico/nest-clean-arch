@@ -1,5 +1,5 @@
 import { Controller, Get, INestApplication } from '@nestjs/common'
-import { NotFoundErrorFilter } from './../../not-found-error.filter'
+import { NotFoundErrorFilter } from '../../not-found-error.filter'
 import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 import { NotFoundError } from '@/shared/domain/errors/not-found-error'
@@ -24,15 +24,11 @@ describe('NotFoundErrorFilter tests', () => {
         await app.init()
     })
 
-    afterAll(async () => {
-        await module.close()
-    })
-
     it('should be defined', () => {
         expect(new NotFoundErrorFilter()).toBeDefined()
     })
 
-    it('should catch a ConflictError', () => {
+    it('should catch a NotFoundError', () => {
         return request(app.getHttpServer()).get('/stub').expect(404).expect({
             statusCode: 404,
             error: 'Not Found',
