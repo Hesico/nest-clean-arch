@@ -19,5 +19,10 @@ export function applyGlobalConfig(app: INestApplication) {
     )
 
     app.useGlobalInterceptors(new WrapperDataInterceptor(), new ClassSerializerInterceptor(app.get(Reflector)))
-    app.useGlobalFilters(new ConflictErrorFilter(), new NotFoundErrorFilter(), new InvalidPasswordErrorFilter())
+    app.useGlobalFilters(
+        new ConflictErrorFilter(),
+        new NotFoundErrorFilter(),
+        new InvalidPasswordErrorFilter(),
+        new InvalidPasswordErrorFilter(),
+    )
 }

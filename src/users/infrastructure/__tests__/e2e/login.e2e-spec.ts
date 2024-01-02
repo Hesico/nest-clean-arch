@@ -91,12 +91,25 @@ describe('UsersController e2e tests', () => {
             ])
         })
 
-        it('Should return a password when password field is invalid', async () => {
+        it('Should return a error when password field is invalid', async () => {
             delete signinDto.password
             const res = await request(app.getHttpServer()).post('/users/login').send(signinDto).expect(422)
 
             expect(res.body.error).toEqual('Unprocessable Entity')
             expect(res.body.message).toStrictEqual(['password should not be empty', 'password must be a string'])
+        })
+
+        it('Should return a password when password is incorrect', async () => {
+            const hashPassword = await hashProvider.generateHash(signinDto.password)
+
+            const entity = new UserEntity(UserDataBuilder({ ...signinDto, password: hashPassword }))
+            await repository.insert(entity)
+
+            signinDto.password = 'wrong_password'
+
+            const res = await request(app.getHttpServer()).post('/users/login').send(signinDto).expect(400)
+
+            console.log(res.body)
         })
     })
 })
