@@ -41,13 +41,13 @@ describe('AuthService unit tests', () => {
     it('should return a jwt', async () => {
         const result = await sut.generateJwt('fake_id')
 
-        expect(Object.keys(result)).toStrictEqual(['acesssToken'])
-        expect(typeof result.acesssToken).toEqual('string')
+        expect(Object.keys(result)).toStrictEqual(['acessToken'])
+        expect(typeof result.acessToken).toEqual('string')
     })
 
     it('should verify a jwt', async () => {
         const result = await sut.generateJwt('fake_id')
-        const validToken = await sut.verifyJwt(result.acesssToken)
+        const validToken = await sut.verifyJwt(result.acessToken)
 
         expect(validToken).not.toBeNull()
 
