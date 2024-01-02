@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, HttpCode, Query, Put } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    Inject,
+    HttpCode,
+    Query,
+    Put,
+    UseGuards,
+} from '@nestjs/common'
 import { SignupDto } from './dto/signup.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { SignUpUseCase } from '../application/useCases/signup.usecase'
@@ -14,6 +27,7 @@ import { SigninDto } from './dto/signin.dto'
 import { UserOutput } from '../application/dto/user-output'
 import { UserCollectionPresenter, UserPresenter } from './presenters/user.presenter'
 import { AuthService } from '@/auth/infrastructure/auth.service'
+import { AuthGuard } from '@/auth/infrastructure/aith.guard'
 
 @Controller('users')
 export class UsersController {
@@ -62,30 +76,35 @@ export class UsersController {
         return this.authService.generateJwt(output.id)
     }
 
+    @UseGuards(AuthGuard)
     @Get()
     async search(@Query() searchParams: ListUsersDto) {
         const output = await this.listUsersUseCase.execute(searchParams)
         return UsersController.listUsersToResponse(output)
     }
 
+    @UseGuards(AuthGuard)
     @Get(':id')
     async findOne(@Param('id') id: string) {
         const output = await this.getUserUseCase.execute({ id })
         return UsersController.userToResponse(output)
     }
 
+    @UseGuards(AuthGuard)
     @Put(':id')
     async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         const output = await this.updateUserUseCase.execute({ id, ...updateUserDto })
         return UsersController.userToResponse(output)
     }
 
+    @UseGuards(AuthGuard)
     @Patch(':id')
     async updatePassword(@Param('id') id: string, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
         const output = await this.updateUserPasswordUseCase.execute({ id, ...updateUserPasswordDto })
         return UsersController.userToResponse(output)
     }
 
+    @UseGuards(AuthGuard)
     @HttpCode(204)
     @Delete(':id')
     async remove(@Param('id') id: string) {
