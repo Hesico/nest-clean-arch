@@ -109,7 +109,8 @@ describe('UsersController e2e tests', () => {
 
             const res = await request(app.getHttpServer()).post('/users/login').send(signinDto).expect(400)
 
-            console.log(res.body)
+            expect(res.body.error).toEqual('Bad Request')
+            expect(res.body.message).toStrictEqual('Invalid password')
         })
     })
 })
