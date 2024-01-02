@@ -7,8 +7,6 @@ import { EnvConfigModule } from '@/shared/infrastructure/env-config/env-config.m
 import { UsersModule } from '../../users.module'
 import { DatabaseModule } from '@/shared/infrastructure/database/database.module'
 import request from 'supertest'
-import { UsersController } from '../../users.controller'
-import { instanceToPlain } from 'class-transformer'
 import { applyGlobalConfig } from '@/global-config'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder'
@@ -85,33 +83,49 @@ describe('UsersController e2e tests', () => {
             ])
         })
 
-        // it('Should return a error when name field is invalid', async () => {
-        //     delete signupDto.name
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
+        it('Should return a 404 code when throw NotFoundError with invalid id', async () => {
+            const res = await request(app.getHttpServer())
+                .patch(`/users/fakeId`)
+                .send(UpdateUserPasswordDto)
+                .expect(404)
 
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['name should not be empty', 'name must be a string'])
-        // })
+            expect(res.body.error).toEqual('Not Found')
+            expect(res.body.message).toStrictEqual('User not found using ID fakeId')
+        })
 
-        // it('Should return a error when email field is invalid', async () => {
-        //     delete signupDto.email
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
+        it('Should return a 422 error when password is invalid', async () => {
+            delete UpdateUserPasswordDto.password
+            const res = await request(app.getHttpServer())
+                .patch(`/users/${entity.id}`)
+                .send(UpdateUserPasswordDto)
+                .expect(422)
 
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual([
-        //         'email must be an email',
-        //         'email should not be empty',
-        //         'email must be a string',
-        //     ])
-        // })
+            expect(res.body.error).toEqual('Unprocessable Entity')
+            expect(res.body.message).toStrictEqual(['password should not be empty', 'password must be a string'])
+        })
 
-        // it('Should return a error when password field is invalid', async () => {
-        //     delete signupDto.password
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(422)
+        it('Should return a 422 error when oldPassword is invalid', async () => {
+            delete UpdateUserPasswordDto.oldPassword
+            const res = await request(app.getHttpServer())
+                .patch(`/users/${entity.id}`)
+                .send(UpdateUserPasswordDto)
+                .expect(422)
 
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['password should not be empty', 'password must be a string'])
-        // })
+            expect(res.body.error).toEqual('Unprocessable Entity')
+            expect(res.body.message).toStrictEqual(['oldPassword should not be empty', 'oldPassword must be a string'])
+        })
+
+        it('Should return a error when oldPassword field is dont match', async () => {
+            UpdateUserPasswordDto.oldPassword = 'wrong_password'
+            const res = await request(app.getHttpServer())
+                .patch(`/users/${entity.id}`)
+                .send(UpdateUserPasswordDto)
+                .expect(422)
+
+            console.log(res)
+            // expect(res.body.error).toEqual('Unprocessable Entity')
+            // expect(res.body.message).toStrictEqual('Invalid old password')
+        })
 
         // it('Should return a error when a invalid field is provided', async () => {
         //     const res = await request(app.getHttpServer())

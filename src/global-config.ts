@@ -3,6 +3,7 @@ import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@n
 import { WrapperDataInterceptor } from './shared/infrastructure/interceptors/wrapper-data/wrapper-data.interceptor'
 import { ConflictErrorFilter } from './shared/infrastructure/exception-filters/conflict-error/conflict-error.filter'
 import { NotFoundErrorFilter } from './shared/infrastructure/exception-filters/not-found-error/not-found-error.filter'
+import { InvalidPasswordErrorFilter } from './shared/infrastructure/exception-filters/invalid-password-error/invalid-password-error.filter'
 
 export function applyGlobalConfig(app: INestApplication) {
     app.useGlobalPipes(
@@ -18,5 +19,5 @@ export function applyGlobalConfig(app: INestApplication) {
     )
 
     app.useGlobalInterceptors(new WrapperDataInterceptor(), new ClassSerializerInterceptor(app.get(Reflector)))
-    app.useGlobalFilters(new ConflictErrorFilter(), new NotFoundErrorFilter())
+    app.useGlobalFilters(new ConflictErrorFilter(), new NotFoundErrorFilter(), new InvalidPasswordErrorFilter())
 }
