@@ -122,30 +122,8 @@ describe('UsersController e2e tests', () => {
                 .send(UpdateUserPasswordDto)
                 .expect(422)
 
-            console.log(res)
-            // expect(res.body.error).toEqual('Unprocessable Entity')
-            // expect(res.body.message).toStrictEqual('Invalid old password')
+            expect(res.body.error).toEqual('Unprocessable Entity')
+            expect(res.body.message).toStrictEqual('Invalid old password')
         })
-
-        // it('Should return a error when a invalid field is provided', async () => {
-        //     const res = await request(app.getHttpServer())
-        //         .post('/users')
-        //         .send(Object.assign(signupDto, { xpto: 10 }))
-        //         .expect(422)
-
-        //     expect(res.body.error).toEqual('Unprocessable Entity')
-        //     expect(res.body.message).toStrictEqual(['property xpto should not exist'])
-        // })
-
-        // it('Should return a error with 409 when the email is duplicated', async () => {
-        //     const entity = new UserEntity(UserDataBuilder({ ...signupDto }))
-        //     await repository.insert(entity)
-
-        //     const res = await request(app.getHttpServer()).post('/users').send(signupDto).expect(409).expect({
-        //         statusCode: 409,
-        //         error: 'Conflict',
-        //         message: 'Email address already used',
-        //     })
-        // })
     })
 })

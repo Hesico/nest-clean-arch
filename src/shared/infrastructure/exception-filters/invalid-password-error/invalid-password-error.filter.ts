@@ -10,7 +10,7 @@ export class InvalidPasswordErrorFilter implements ExceptionFilter {
 
         response.status(422).send({
             statusCode: 422,
-            error: 'Invalid Password',
+            error: 'Unprocessable Entity',
             message: exception.message,
         })
     }
