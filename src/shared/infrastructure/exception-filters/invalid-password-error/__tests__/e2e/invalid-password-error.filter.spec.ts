@@ -31,7 +31,7 @@ describe('InvalidPasswordErrorFilter tests', () => {
     it('should catch a invalid password', () => {
         return request(app.getHttpServer()).get('/stub').expect(422).expect({
             statusCode: 422,
-            error: 'Invalid Password',
+            error: 'Unprocessable Entity',
             message: 'Invalid password',
         })
     })
