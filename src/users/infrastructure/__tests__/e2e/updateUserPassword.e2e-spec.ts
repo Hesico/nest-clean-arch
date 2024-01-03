@@ -22,6 +22,10 @@ describe('UsersController e2e tests', () => {
     const prismaService = new PrismaClient()
     let hashProvider: HashProviderInterface
     let entity: UserEntity
+    let loginEntity: UserEntity
+
+    let hashLoginPassword: string
+    let acessToken: string
 
     beforeAll(async () => {
         // setupPrismaTests()
@@ -36,6 +40,7 @@ describe('UsersController e2e tests', () => {
 
         repository = module.get<UserRepository.Repository>('UserRepository')
         hashProvider = new BcryptjsHashProvider()
+        hashLoginPassword = await hashProvider.generateHash('1234')
     })
 
     beforeEach(async () => {
@@ -54,12 +59,26 @@ describe('UsersController e2e tests', () => {
         )
 
         await repository.insert(entity)
+
+        loginEntity = new UserEntity(UserDataBuilder({ email: 'a@a.com', password: hashLoginPassword }))
+        await repository.insert(loginEntity)
+
+        const loginRes = await request(app.getHttpServer())
+            .post('/users/login')
+            .send({
+                email: 'a@a.com',
+                password: '1234',
+            })
+            .expect(200)
+
+        acessToken = loginRes.body.acessToken
     })
 
     describe('PATCH /users', () => {
-        it('Should update a user passorw', async () => {
+        it('Should update a user password', async () => {
             const res = await request(app.getHttpServer())
                 .patch(`/users/${entity.id}`)
+                .set('Authorization', `Bearer ${acessToken}`)
                 .send(UpdateUserPasswordDto)
                 .expect(200)
 
@@ -72,7 +91,11 @@ describe('UsersController e2e tests', () => {
         })
 
         it('Should return a error when input is empty', async () => {
-            const res = await request(app.getHttpServer()).patch(`/users/${entity.id}`).send({}).expect(422)
+            const res = await request(app.getHttpServer())
+                .patch(`/users/${entity.id}`)
+                .set('Authorization', `Bearer ${acessToken}`)
+                .send({})
+                .expect(422)
 
             expect(res.body.error).toEqual('Unprocessable Entity')
             expect(res.body.message).toStrictEqual([
@@ -86,6 +109,7 @@ describe('UsersController e2e tests', () => {
         it('Should return a 404 code when throw NotFoundError with invalid id', async () => {
             const res = await request(app.getHttpServer())
                 .patch(`/users/fakeId`)
+                .set('Authorization', `Bearer ${acessToken}`)
                 .send(UpdateUserPasswordDto)
                 .expect(404)
 
@@ -97,6 +121,7 @@ describe('UsersController e2e tests', () => {
             delete UpdateUserPasswordDto.password
             const res = await request(app.getHttpServer())
                 .patch(`/users/${entity.id}`)
+                .set('Authorization', `Bearer ${acessToken}`)
                 .send(UpdateUserPasswordDto)
                 .expect(422)
 
@@ -108,6 +133,7 @@ describe('UsersController e2e tests', () => {
             delete UpdateUserPasswordDto.oldPassword
             const res = await request(app.getHttpServer())
                 .patch(`/users/${entity.id}`)
+                .set('Authorization', `Bearer ${acessToken}`)
                 .send(UpdateUserPasswordDto)
                 .expect(422)
 
@@ -119,6 +145,7 @@ describe('UsersController e2e tests', () => {
             UpdateUserPasswordDto.oldPassword = 'wrong_password'
             const res = await request(app.getHttpServer())
                 .patch(`/users/${entity.id}`)
+                .set('Authorization', `Bearer ${acessToken}`)
                 .send(UpdateUserPasswordDto)
                 .expect(422)
 
