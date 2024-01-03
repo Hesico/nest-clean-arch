@@ -13,12 +13,20 @@ import { applyGlobalConfig } from '@/global-config'
 import { UserEntity } from '@/users/domain/entities/user.entity'
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder'
 import { URLSearchParams } from 'url'
+import { HashProviderInterface } from '@/shared/application/providers/hash-provider.interface'
+import { BcryptjsHashProvider } from '../../providers/hash-provider/bcryptjs-hash.provider'
 
 describe('UsersController e2e tests', () => {
     let app: INestApplication
     let module: TestingModule
     let repository: UserRepository.Repository
     const prismaService = new PrismaClient()
+
+    let entity: UserEntity
+
+    let hashProvider: HashProviderInterface
+    let hashPassword: string
+    let acessToken: string
 
     beforeAll(async () => {
         // setupPrismaTests()
@@ -32,10 +40,25 @@ describe('UsersController e2e tests', () => {
         await app.init()
 
         repository = module.get<UserRepository.Repository>('UserRepository')
+        hashProvider = new BcryptjsHashProvider()
+        hashPassword = await hashProvider.generateHash('1234')
     })
 
     beforeEach(async () => {
         await prismaService.user.deleteMany()
+
+        entity = new UserEntity(UserDataBuilder({ email: 'a@a.com', password: hashPassword }))
+        await repository.insert(entity)
+
+        const loginRes = await request(app.getHttpServer())
+            .post('/users/login')
+            .send({
+                email: 'a@a.com',
+                password: '1234',
+            })
+            .expect(200)
+
+        acessToken = loginRes.body.acessToken
     })
 
     describe('GET /users', () => {
@@ -61,13 +84,19 @@ describe('UsersController e2e tests', () => {
             const searchParams = {}
             const queryParams = new URLSearchParams(searchParams as any).toString()
 
-            const res = await request(app.getHttpServer()).get(`/users?${queryParams}`).expect(200)
+            const res = await request(app.getHttpServer())
+                .get(`/users?${queryParams}`)
+                .set('Authorization', `Bearer ${acessToken}`)
+                .expect(200)
 
             expect(Object.keys(res.body)).toStrictEqual(['data', 'meta'])
             expect(res.body).toStrictEqual({
-                data: [...entities].reverse().map(item => instanceToPlain(UsersController.userToResponse(item))),
+                data: [].concat(
+                    [...entities].reverse().map(item => instanceToPlain(UsersController.userToResponse(item))),
+                    [instanceToPlain(UsersController.userToResponse(entity))],
+                ),
                 meta: {
-                    total: 3,
+                    total: 4,
                     currentPage: 1,
                     perPage: 15,
                     lastPage: 1,
@@ -103,7 +132,10 @@ describe('UsersController e2e tests', () => {
                 filter: 'TEST',
             }
             const queryParams = new URLSearchParams(searchParams as any).toString()
-            const res = await request(app.getHttpServer()).get(`/users?${queryParams}`).expect(200)
+            const res = await request(app.getHttpServer())
+                .get(`/users?${queryParams}`)
+                .set('Authorization', `Bearer ${acessToken}`)
+                .expect(200)
 
             expect(Object.keys(res.body)).toStrictEqual(['data', 'meta'])
             expect(res.body).toStrictEqual({
@@ -118,7 +150,10 @@ describe('UsersController e2e tests', () => {
         })
 
         it('Should return a error with 422 code when the query is invalid', async () => {
-            const res = await request(app.getHttpServer()).get(`/users?fakeId=10`).expect(422)
+            const res = await request(app.getHttpServer())
+                .get(`/users?fakeId=10`)
+                .set('Authorization', `Bearer ${acessToken}`)
+                .expect(422)
             expect(res.body.error).toBe('Unprocessable Entity')
             expect(res.body.message).toStrictEqual(['property fakeId should not exist'])
         })
